@@ -8,9 +8,7 @@
  * - System health monitoring & dynamic theme switching
  */
 
-const BACKEND_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
-  ? '' 
-  : 'http://127.0.0.1:8000';
+const BACKEND_URL = '';
 
 const STORAGE_KEYS = {
   SESSIONS: 'verbatim_ai_sessions_v2',
