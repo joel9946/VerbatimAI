@@ -19,5 +19,6 @@ COPY --chown=user:user . .
 # Hugging Face Spaces requires listening on port 7860
 EXPOSE 7860
 
-# Run FastAPI app with uvicorn on port 7860
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Run FastAPI app with uvicorn (binds to $PORT provided by host like Render/HF, fallback to 7860)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860}"]
+
