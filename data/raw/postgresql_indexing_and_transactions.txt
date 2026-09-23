@@ -1,0 +1,41 @@
+# PostgreSQL: Indexing Strategies, ACID Transactions, and Performance
+
+## 1. Indexing Strategies
+Indexes speed up data retrieval queries at the cost of slower writes and increased disk usage.
+
+### B-Tree Indexes (Default)
+- The default index type created by `CREATE INDEX idx_name ON table(col);`.
+- Self-balancing tree structure suitable for equality (`=`) and range queries (`<`, `<=`, `>`, `>=`, `BETWEEN`), as well as `IS NULL` and `ORDER BY`.
+- Composite B-Tree indexes: `CREATE INDEX idx_user_status ON orders (user_id, status);`. PostgreSQL can use this index for queries filtering on `user_id` alone, or `user_id AND status`, but NOT on `status` alone (due to the left-to-right prefix rule).
+
+### GIN Indexes (Generalized Inverted Index)
+- Inverted index mapping elements or keys to the rows that contain them.
+- Ideal for composite and multi-value data types such as:
+  - `JSONB` document attributes (`@>`, `?`, `?&`).
+  - Full-text search `tsvector` columns.
+  - PostgreSQL arrays (`integer[]`, `text[]`).
+- Example: `CREATE INDEX idx_orders_payload ON orders USING GIN (payload_jsonb);`.
+
+## 2. EXPLAIN and EXPLAIN ANALYZE
+To inspect query execution plans and diagnose slow queries, use `EXPLAIN ANALYZE`:
+- `EXPLAIN SELECT ...`: Shows the optimizer's estimated cost and execution plan without running the query.
+- `EXPLAIN (ANALYZE, BUFFERS) SELECT ...`: Actually executes the query, showing real execution time, row counts, memory usage, and buffer cache hits versus disk reads.
+Look for sequential table scans (`Seq Scan`) on large tables, which usually indicate a missing index.
+
+## 3. ACID Transactions and Isolation Levels
+A database transaction is a unit of work that satisfies ACID properties:
+- **Atomicity**: All operations succeed, or all are rolled back.
+- **Consistency**: Database transitions from one valid state to another, preserving constraints.
+- **Isolation**: Concurrent transactions do not interfere with each other.
+- **Durability**: Committed data survives system crashes and power failures.
+
+PostgreSQL supports three main transaction isolation levels:
+1. **Read Committed (Default)**:
+   - A query sees only data committed before that individual query began.
+   - Prevents dirty reads, but allows non-repeatable reads and phantom reads.
+2. **Repeatable Read**:
+   - All queries inside the transaction see a consistent snapshot taken at the start of the transaction.
+   - Prevents dirty reads and non-repeatable reads.
+3. **Serializable**:
+   - The strictest isolation level. Guarantees that concurrent transactions produce the exact same outcome as if they were executed sequentially.
+   - If an serialization conflict occurs, PostgreSQL aborts the transaction with error code `40001` (serialization_failure), requiring the application to retry the transaction.

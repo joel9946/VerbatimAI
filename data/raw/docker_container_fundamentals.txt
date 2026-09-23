@@ -1,0 +1,43 @@
+# Docker: Container Fundamentals, Multi-Stage Builds, and Volumes
+
+## 1. Core Dockerfile Directives
+A Dockerfile contains instructions that build a container image layer by layer:
+
+- `FROM <image>:<tag>`: Specifies the base image. Best practices recommend using minimal images like `python:3.11-slim` or `alpine` to reduce attack surface and download size.
+- `WORKDIR <path>`: Sets the working directory for subsequent `RUN`, `CMD`, `ENTRYPOINT`, `COPY`, and `ADD` commands. If the directory does not exist, Docker creates it automatically.
+- `COPY <src> <dest>`: Copies files or directories from the host filesystem into the container filesystem. To leverage Docker build cache effectively, copy dependency files (like `requirements.txt` or `package.json`) before the rest of the application source code.
+- `RUN <command>`: Executes commands during the build phase and commits the resulting filesystem layer (e.g. `pip install -r requirements.txt`).
+- `EXPOSE <port>`: Documents which network port the application inside the container intends to listen on. It does not automatically publish or bind the port to the host machine.
+- `CMD ["executable", "param1"]`: Provides default execution commands for a container. Can be overridden easily when running `docker run <image> <override-command>`.
+- `ENTRYPOINT ["executable"]`: Configures a container that will run as an executable. Arguments provided to `docker run` are appended to the entrypoint.
+
+## 2. Multi-Stage Builds
+Multi-stage builds allow you to use multiple `FROM` statements in a single Dockerfile. You can selectively copy artifacts from earlier build stages into a lean final runtime image, leaving compilers, build tools, and temporary development files behind:
+
+```dockerfile
+# Stage 1: Build stage
+FROM golang:1.22 AS builder
+WORKDIR /src
+COPY . .
+RUN CGO_ENABLED=0 go build -o /bin/myapp
+
+# Stage 2: Minimal runtime stage
+FROM scratch
+COPY --from=builder /bin/myapp /bin/myapp
+EXPOSE 8080
+ENTRYPOINT ["/bin/myapp"]
+```
+
+Benefits of multi-stage builds:
+- Drastically smaller production image size (often under 20MB instead of 1GB).
+- Reduced vulnerability footprint by eliminating shells, package managers, and compilers from production containers.
+
+## 3. Storage: Volumes vs Bind Mounts
+Containers have ephemeral writable layers. When a container is deleted, any data written to its local layer is lost. To persist data or share files between containers, Docker provides two primary storage mechanisms:
+
+1. **Named Volumes (`docker volume create my_data`)**:
+   - Managed directly by Docker and stored in `/var/lib/docker/volumes/` on the host.
+   - Ideal for production databases (PostgreSQL, MySQL, Qdrant) because they are independent of host directory structures and have higher I/O performance on macOS and Windows.
+2. **Bind Mounts (`-v /host/path:/container/path`)**:
+   - Maps an exact absolute path from the host machine into the container.
+   - Highly useful during local development so changes made in an IDE on the host immediately reflect inside the running container without rebuilding the image.

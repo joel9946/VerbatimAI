@@ -1,0 +1,103 @@
+PDF 2 — Forex Trading
+
+20 Questions & Answers
+
+1. What is Forex trading?
+
+Answer:
+Forex, or foreign exchange, is the market where one currency is exchanged for another. Currency values are represented using currency pairs such as EUR/USD.
+
+2. What is a currency pair?
+
+Answer:
+A currency pair represents the relative value of two currencies. The first currency is the base currency and the second is the quote currency. For example, in EUR/USD, EUR is the base currency and USD is the quote currency.
+
+3. What are bid, ask, and spread?
+
+Answer:
+The bid is the price at which a trader can sell under the quote convention, while the ask is the price at which the trader can buy. The spread is the difference between the bid and ask prices and represents a transaction-cost component.
+
+4. What is a pip in Forex?
+
+Answer:
+A pip is a conventional unit used to measure currency-price movements. For many major currency pairs it corresponds to the fourth decimal place, while many JPY pairs use the second decimal place.
+
+5. What is leverage?
+
+Answer:
+Leverage allows a trader to control a larger notional position using a smaller amount of deposited capital. It magnifies both potential profits and potential losses.
+
+6. What is margin?
+
+Answer:
+Margin is the collateral required to open and maintain a leveraged trading position. The required margin depends on factors such as the broker, instrument, account, and jurisdiction.
+
+7. What is a market order?
+
+Answer:
+A market order requests immediate execution at the best available price under current market conditions. The final execution price can differ from the displayed price, particularly during volatile or illiquid conditions.
+
+8. What is a limit order?
+
+Answer:
+A limit order specifies a price condition and seeks execution at that price or a more favorable price, subject to market liquidity and execution conditions.
+
+9. What is a stop-loss order?
+
+Answer:
+A stop-loss is an order or predefined rule designed to exit a trading position when the market moves against the trader by a specified amount. It is commonly used as part of risk management.
+
+10. What is slippage?
+
+Answer:
+Slippage is the difference between the expected or requested execution price and the actual execution price. It can occur because of volatility, liquidity, latency, order type, or market gaps.
+
+11. What is fundamental analysis in Forex?
+
+Answer:
+Fundamental analysis studies economic, monetary, political, and financial factors that may influence currency values. Important factors include interest rates, inflation, employment, economic growth, and central-bank policies.
+
+12. How can interest rates affect currencies?
+
+Answer:
+Interest-rate expectations can influence currency demand because they affect relative returns and expectations about monetary policy. Currency markets can react strongly when expectations about future interest rates change.
+
+13. What is technical analysis?
+
+Answer:
+Technical analysis examines historical price and related market information to identify trends, momentum, patterns, support, resistance, and volatility. Technical signals do not guarantee future price movements.
+
+14. What is RSI?
+
+Answer:
+RSI, or Relative Strength Index, is a momentum oscillator commonly calculated over 14 periods. Traders often discuss levels such as 70 and 30, but these levels should not be treated as automatic buy or sell signals.
+
+15. What is risk-to-reward ratio?
+
+Answer:
+Risk-to-reward compares the planned potential loss of a trade with its planned potential profit. For example, a 1:2 ratio means risking one unit to target two units. A favorable ratio alone does not guarantee profitability.
+
+16. What is drawdown?
+
+Answer:
+Drawdown is a decline in account or strategy equity from a previous peak to a subsequent low. Maximum drawdown is the largest peak-to-trough decline over a selected period.
+
+17. What is backtesting?
+
+Answer:
+Backtesting involves applying a defined trading strategy to historical data to evaluate how it would have performed under specified assumptions. Realistic backtesting should consider spread, commissions, slippage, execution limitations, and data quality.
+
+18. What is overfitting in trading?
+
+Answer:
+Overfitting occurs when a trading strategy is tuned too closely to historical data and consequently performs poorly on unseen market periods. Excessive parameter optimization can cause overfitting.
+
+19. What is a carry trade?
+
+Answer:
+A carry trade seeks to benefit from differences in interest rates or funding costs between currencies. However, unfavorable exchange-rate movements can outweigh the interest-rate benefit.
+
+20. What should a complete Forex trading plan contain?
+
+Answer:
+A trading plan can specify the currency pairs and sessions to trade, entry conditions, invalidation conditions, risk per trade, position-sizing rules, maximum loss limits, execution rules, and a trading-journal and review process.

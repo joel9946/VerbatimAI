@@ -1,0 +1,38 @@
+# Git: Branching, Merging, Rebasing, and Cherry-Picking
+
+## 1. Git Merge vs Git Rebase
+Both `git merge` and `git rebase` incorporate changes from one branch into another, but they do so in fundamentally different ways:
+
+### Git Merge (`git merge feature`)
+- Preserves complete commit history exactly as it occurred chronologically.
+- Creates a dedicated "merge commit" that has two parent commits.
+- Safe for shared, public branches because it never alters or rewrites existing commit hashes.
+- Downside: Commit graphs can become cluttered with numerous merge commits in large teams.
+
+### Git Rebase (`git rebase main`)
+- Rewrites project history by taking the commits from your feature branch and replaying them one-by-one on top of the tip of `main`.
+- Creates a perfectly linear commit history without merge commits.
+- Gives each replayed commit a brand new commit hash SHA.
+- **The Golden Rule of Rebasing**: NEVER rebase commits that have already been pushed to a shared public branch. Only rebase local, unshared feature branches.
+
+## 2. Interactive Rebase (`git rebase -i HEAD~N`)
+Interactive rebase allows you to rewrite, clean up, or consolidate commits before opening a pull request:
+- `pick`: Use the commit as is.
+- `reword`: Keep the commit contents, but change the commit message.
+- `edit`: Stop and allow amending the commit before proceeding.
+- `squash`: Meld the commit into the previous commit and concatenate their commit messages.
+- `fixup`: Like squash, but discard this commit's log message completely.
+- `drop`: Remove the commit entirely.
+
+## 3. Git Cherry-Pick
+`git cherry-pick <commit-hash>` applies the changes introduced by an existing commit from another branch onto your current branch as a new commit.
+Common use cases:
+- Hotfixing production: You fixed a critical bug in a development branch and need that single fix applied immediately to the `main` or `production` release branch without pulling in all other unreleased features.
+- Recovering specific lost work from an abandoned feature branch.
+
+## 4. Git Stash
+When you need to switch branches urgently to fix a bug but your working tree has uncommitted edits:
+- `git stash`: Saves modified tracked files and staged changes to a temporary stack and reverts working directory to `HEAD`.
+- `git stash -u` (or `--include-untracked`): Also stashes new untracked files.
+- `git stash pop`: Reapplies the most recently stashed changes and removes them from the stash list.
+- `git stash list`: Views all saved stashes.

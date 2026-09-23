@@ -1,0 +1,30 @@
+FastAPI Documentation Overview
+
+FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.8+ based on standard Python type hints.
+
+Installation:
+To install FastAPI, run:
+pip install fastapi
+You will also need an ASGI server for production such as Uvicorn:
+pip install "uvicorn[standard]"
+Alternatively, you can install both with:
+pip install "fastapi[standard]"
+
+Path Parameters:
+You can declare path "parameters" or "variables" with the same syntax used by Python format strings:
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int):
+    return {"item_id": item_id}
+
+The value of the path parameter item_id will be passed to your function as the argument item_id. A path parameter is a variable part of the URL declared in the route decorator, e.g. /items/{item_id}.
+
+Query Parameters:
+When you declare other function parameters that are not part of the path parameters, they are automatically interpreted as "query" parameters.
+For example, in URL /items/?skip=0&limit=10, the query parameters are skip and limit.
+
+Request Body:
+When you need to send data from a client to your API, you send it as a request body. A request body is data sent by the client to your API. To declare a request body, you use Pydantic models with all their power and benefits.

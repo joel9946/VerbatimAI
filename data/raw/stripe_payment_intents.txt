@@ -1,0 +1,41 @@
+# Stripe Payments: Payment Intents API and Lifecycle
+
+## 1. Overview of PaymentIntents
+The Stripe PaymentIntents API represents your intent to collect payment from a customer. It tracks the charge attempts and payment state transitions through the entire payment lifecycle.
+Using PaymentIntents is required for handling dynamic authentication flows such as 3D Secure (3DS) and regulatory mandates like Strong Customer Authentication (SCA) in Europe.
+
+A typical PaymentIntent lifecycle consists of the following states:
+1. `requires_payment_method`: The PaymentIntent has been created and is waiting for payment method details (card numbers, wallet tokens, bank accounts).
+2. `requires_confirmation`: The payment method has been attached, and the intent needs to be confirmed.
+3. `requires_action`: Customer interaction is needed, such as completing 3D Secure biometric verification or entering an SMS one-time password (OTP).
+4. `processing`: The payment is being verified with the card network or bank.
+5. `requires_capture`: The payment was authorized and holds funds on the card, waiting for explicit capture by the merchant.
+6. `succeeded`: The payment was successfully authorized and captured.
+7. `canceled`: The PaymentIntent was explicitly canceled by your server or expired.
+
+## 2. Creating a PaymentIntent
+To create a PaymentIntent on your backend server:
+
+```python
+import stripe
+
+stripe.api_key = "sk_test_..."
+
+intent = stripe.PaymentIntent.create(
+    amount=2000,  # Amount in smallest currency unit (2000 = $20.00 USD)
+    currency="usd",
+    automatic_payment_methods={"enabled": True},
+    metadata={"order_id": "order_6789"},
+)
+```
+
+Important parameters:
+- `amount`: An integer representing the amount in the smallest currency unit (e.g. cents for USD/EUR, or whole units for zero-decimal currencies like JPY).
+- `currency`: Three-letter ISO currency code (must be lowercase, e.g. `usd`, `eur`, `gbp`).
+- `automatic_payment_methods`: Enables dynamic payment methods like Apple Pay, Google Pay, Klarna, or cards based on customer location and device.
+- `client_secret`: Returned in the response and passed to the frontend client (Stripe.js or mobile SDK) to securely complete the transaction without exposing your secret API key.
+
+## 3. Idempotency Keys
+Network errors or server timeouts can cause requests to be retried accidentally. To prevent charging a customer twice, Stripe supports Idempotent Requests.
+You can include an `Idempotency-Key: <UUID>` header in any `POST` request.
+If a request fails with a network glitch and you retry with the exact same idempotency key within 24 hours, Stripe returns the exact original cached response without creating a duplicate charge or charging the card twice.

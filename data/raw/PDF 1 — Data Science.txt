@@ -1,0 +1,103 @@
+PDF 1 — Data Science
+
+20 Questions & Answers
+
+1. What is Data Science?
+
+Answer:
+Data Science is an interdisciplinary field that combines statistics, mathematics, programming, data engineering, machine learning, and domain knowledge to extract useful information from data and support decision-making.
+
+2. What are the main stages of the Data Science lifecycle?
+
+Answer:
+The main stages are problem definition, data collection, data validation, data cleaning, exploratory data analysis, feature engineering, model training, validation and testing, evaluation, deployment, monitoring, and documentation.
+
+3. What is the difference between structured and unstructured data?
+
+Answer:
+Structured data follows a predefined schema, such as rows and columns in a relational database. Unstructured data does not naturally follow a tabular structure and includes documents, text, images, audio, and video.
+
+4. Why is Python widely used in Data Science?
+
+Answer:
+Python is widely used because it has simple syntax and a large ecosystem of libraries for numerical computing, data manipulation, statistics, machine learning, deep learning, visualization, and deployment.
+
+5. What is the purpose of pandas in Data Science?
+
+Answer:
+pandas is a Python library used for working with structured and tabular data. It provides functionality for loading, cleaning, transforming, filtering, grouping, joining, and analyzing datasets.
+
+6. What is Exploratory Data Analysis (EDA)?
+
+Answer:
+EDA is the process of examining a dataset to understand its distributions, missing values, outliers, relationships, category frequencies, and possible data-quality problems before building a model.
+
+7. What is the difference between supervised and unsupervised learning?
+
+Answer:
+Supervised learning uses labeled data where the target is known. Examples include regression and classification. Unsupervised learning works without a target label and includes techniques such as clustering and dimensionality reduction.
+
+8. What is overfitting?
+
+Answer:
+Overfitting occurs when a machine-learning model learns patterns that are specific to the training data and therefore performs poorly on new, unseen data.
+
+9. What is the difference between training, validation, and test data?
+
+Answer:
+Training data is used to fit the model. Validation data is used for model selection and tuning. Test data is used to estimate how well the final model performs on unseen data.
+
+10. What is Random Forest?
+
+Answer:
+Random Forest is an ensemble machine-learning algorithm that combines multiple randomized decision trees. Their predictions are aggregated to improve generalization and reduce variance.
+
+11. What is the purpose of feature engineering?
+
+Answer:
+Feature engineering transforms raw data into useful representations that can help a machine-learning model learn meaningful patterns. Examples include ratios, date components, interaction features, lag features, and rolling statistics.
+
+12. What is data leakage?
+
+Answer:
+Data leakage occurs when information that would not be available at the actual prediction time is accidentally used during model training or preprocessing. It can produce unrealistically high evaluation results.
+
+13. What is the difference between precision and recall?
+
+Answer:
+Precision measures how many predicted positive cases are actually positive. Recall measures how many of the actual positive cases were correctly detected.
+
+14. What is a confusion matrix?
+
+Answer:
+A confusion matrix summarizes classification results using true positives, true negatives, false positives, and false negatives. It helps analyze the types of errors made by a classification model.
+
+15. What is a neural network?
+
+Answer:
+A neural network is a machine-learning model consisting of interconnected computational units arranged into layers. Each unit uses weights, a bias, and an activation function, and training adjusts these parameters to minimize a loss function.
+
+16. What is the difference between CNN and RNN?
+
+Answer:
+A CNN is designed primarily to learn spatial patterns and is widely used for image-related tasks. An RNN is designed to process sequential information. LSTM and GRU are improved recurrent architectures for handling longer-term dependencies.
+
+17. What are Transformers?
+
+Answer:
+Transformers are neural-network architectures that use attention mechanisms to model relationships between elements in a sequence. They are fundamental to many modern language, vision, and multimodal AI systems.
+
+18. What is an embedding?
+
+Answer:
+An embedding is a numerical vector representation of an object such as text. Embeddings are designed so that semantically or structurally related objects can have similar vector representations.
+
+19. What is Retrieval-Augmented Generation (RAG)?
+
+Answer:
+RAG combines information retrieval with generative AI. A typical RAG system processes documents, divides them into chunks, creates embeddings, stores them in a vector database, retrieves relevant chunks for a user query, and provides those chunks as context to a language model.
+
+20. What is MLOps?
+
+Answer:
+MLOps applies software engineering and operational practices to machine-learning systems. It covers areas such as reproducibility, versioning, testing, deployment, monitoring, model maintenance, and retraining.

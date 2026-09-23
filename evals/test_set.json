@@ -1,0 +1,162 @@
+[
+  {
+    "question": "How do I declare a path parameter in FastAPI?",
+    "ground_truth": "You declare path parameters using Python format string syntax in route decorators, e.g. @app.get('/items/{item_id}'), and pass item_id as a function argument."
+  },
+  {
+    "question": "What error status code does FastAPI return if a path parameter fails type validation?",
+    "ground_truth": "FastAPI automatically returns an HTTP 422 Unprocessable Entity error with detailed validation error details."
+  },
+  {
+    "question": "Why does route order matter when defining paths like /users/me and /users/{user_id} in FastAPI?",
+    "ground_truth": "Because path operations are evaluated in order of declaration; if /users/{user_id} is declared first, it matches /users/me thinking user_id has the value 'me'."
+  },
+  {
+    "question": "How do I make a query parameter optional in FastAPI?",
+    "ground_truth": "You make a query parameter optional by providing a default value (e.g. skip: int = 0) or using Union[str, None] = None or str | None = None."
+  },
+  {
+    "question": "How do you define a request body in FastAPI?",
+    "ground_truth": "You declare a request body by creating a Pydantic model inheriting from BaseModel and specifying it as a parameter in your route function."
+  },
+  {
+    "question": "How does FastAPI handle dependency injection for database sessions?",
+    "ground_truth": "FastAPI uses Depends() with functions that yield the session in a try block and close it in a finally block (e.g. yield db; finally: db.close())."
+  },
+  {
+    "question": "What is CORS and why is it needed in web applications?",
+    "ground_truth": "CORS (Cross-Origin Resource Sharing) allows frontends running in a browser on one origin to safely communicate with a backend running on a different origin."
+  },
+  {
+    "question": "How do I enable CORS in FastAPI for local frontend development?",
+    "ground_truth": "By adding CORSMiddleware with app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=['*'], allow_headers=['*'])."
+  },
+  {
+    "question": "What header does OAuth2PasswordBearer expect in requests?",
+    "ground_truth": "It expects the Authorization header formatted as 'Bearer <token>'."
+  },
+  {
+    "question": "What response does FastAPI return if an endpoint requiring an OAuth2 token receives no credentials?",
+    "ground_truth": "It returns a 401 Unauthorized status with a WWW-Authenticate: Bearer challenge header."
+  },
+  {
+    "question": "What is the Stripe PaymentIntents API used for?",
+    "ground_truth": "The PaymentIntents API represents the intent to collect payment from a customer and tracks charge attempts and payment state transitions through the entire lifecycle, including 3D Secure."
+  },
+  {
+    "question": "What does the requires_action state mean in a Stripe PaymentIntent?",
+    "ground_truth": "It indicates that customer interaction is needed, such as completing 3D Secure biometric verification or entering an SMS one-time password."
+  },
+  {
+    "question": "How do you specify the charge amount when creating a Stripe PaymentIntent?",
+    "ground_truth": "The amount is passed as an integer in the smallest currency unit, such as cents for USD (e.g., 2000 for $20.00)."
+  },
+  {
+    "question": "What is a Stripe client_secret and where should it be passed?",
+    "ground_truth": "The client_secret is returned by the PaymentIntent creation response and passed to the frontend client SDK (Stripe.js or mobile SDK) to securely complete the transaction without exposing the secret API key."
+  },
+  {
+    "question": "How do Stripe Idempotency Keys prevent duplicate charges?",
+    "ground_truth": "By passing an Idempotency-Key header in POST requests; if retried within 24 hours, Stripe returns the original cached response instead of creating a duplicate charge."
+  },
+  {
+    "question": "Why should fulfillment rely on Stripe webhooks instead of frontend redirect callbacks?",
+    "ground_truth": "Because payment processing occurs asynchronously (with 3D Secure, ACH, and digital wallets), and frontend redirects are not guaranteed to complete or can be spoofed."
+  },
+  {
+    "question": "How do you verify a Stripe webhook signature in Python?",
+    "ground_truth": "Using stripe.Webhook.construct_event(payload, sig_header, secret) with the request body, the Stripe-Signature header, and your webhook signing secret."
+  },
+  {
+    "question": "Can you issue partial refunds with Stripe?",
+    "ground_truth": "Yes, by calling stripe.Refund.create(payment_intent='...', amount=500) specifying the amount in cents."
+  },
+  {
+    "question": "How long do Stripe refunds take to show up on a customer's bank statement?",
+    "ground_truth": "Refunds typically take 5 to 10 business days to appear on the customer's bank statement."
+  },
+  {
+    "question": "What is the difference between CMD and ENTRYPOINT in a Dockerfile?",
+    "ground_truth": "CMD provides default execution arguments that can be easily overridden at runtime, whereas ENTRYPOINT configures the container to run as a fixed executable with arguments appended."
+  },
+  {
+    "question": "Why should you copy requirements.txt before copying the rest of your application code in Docker?",
+    "ground_truth": "To leverage Docker's layer cache so dependencies are not reinstalled on every build unless requirements.txt changes."
+  },
+  {
+    "question": "What is the benefit of multi-stage Docker builds?",
+    "ground_truth": "Multi-stage builds produce drastically smaller production images and reduce vulnerabilities by copying only compiled artifacts into the final runtime image, leaving compilers and dev tools behind."
+  },
+  {
+    "question": "What is the difference between Docker named volumes and bind mounts?",
+    "ground_truth": "Named volumes are managed by Docker in /var/lib/docker/volumes/ and best for production databases, while bind mounts map an exact host directory path into the container and are best for local development."
+  },
+  {
+    "question": "Does the EXPOSE directive in a Dockerfile automatically publish ports to the host?",
+    "ground_truth": "No, EXPOSE only documents which port the container intends to listen on; you must publish it using -p or compose."
+  },
+  {
+    "question": "What is the key difference between git merge and git rebase?",
+    "ground_truth": "Git merge preserves full chronological history with a merge commit, whereas git rebase rewrites history by replaying commits on top of another branch to create a linear history."
+  },
+  {
+    "question": "What is the Golden Rule of Git Rebasing?",
+    "ground_truth": "Never rebase commits that have already been pushed to a shared public branch; only rebase local, unshared feature branches."
+  },
+  {
+    "question": "What does git cherry-pick do?",
+    "ground_truth": "It applies the changes introduced by an existing commit from another branch onto your current branch as a new commit."
+  },
+  {
+    "question": "How do you include untracked files when stashing in Git?",
+    "ground_truth": "By running git stash -u or git stash --include-untracked."
+  },
+  {
+    "question": "When should you use a PostgreSQL GIN index instead of a B-Tree index?",
+    "ground_truth": "Use GIN indexes for composite and multi-value data types like JSONB document attributes, full-text search tsvector columns, and arrays."
+  },
+  {
+    "question": "What does EXPLAIN ANALYZE do in PostgreSQL?",
+    "ground_truth": "It actually executes the query and shows real execution time, row counts, memory usage, and buffer cache hits versus disk reads."
+  },
+  {
+    "question": "What are the three transaction isolation levels supported in PostgreSQL?",
+    "ground_truth": "Read Committed (default), Repeatable Read, and Serializable."
+  },
+  {
+    "question": "What happens if a conflict occurs under PostgreSQL Serializable isolation?",
+    "ground_truth": "PostgreSQL aborts the transaction with error code 40001 (serialization_failure), requiring the application to retry the transaction."
+  },
+  {
+    "question": "What is overfitting in machine learning?",
+    "ground_truth": "Overfitting occurs when a machine-learning model learns patterns that are specific to the training data and therefore performs poorly on new, unseen data."
+  },
+  {
+    "question": "What is data leakage in data science?",
+    "ground_truth": "Data leakage occurs when information that would not be available at actual prediction time is accidentally used during model training or preprocessing."
+  },
+  {
+    "question": "What is the difference between precision and recall?",
+    "ground_truth": "Precision measures how many predicted positive cases are actually positive, while recall measures how many of the actual positive cases were correctly detected."
+  },
+  {
+    "question": "What is a currency pair in Forex?",
+    "ground_truth": "A currency pair represents the relative value of two currencies, where the first is the base currency and the second is the quote currency (e.g. EUR/USD)."
+  },
+  {
+    "question": "What is a pip in Forex trading?",
+    "ground_truth": "A pip is a conventional unit measuring currency price movements, typically corresponding to the fourth decimal place for major pairs and second decimal place for JPY pairs."
+  },
+  {
+    "question": "What is leverage in Forex trading?",
+    "ground_truth": "Leverage allows a trader to control a larger notional position using a smaller amount of deposited capital, magnifying both potential profits and potential losses."
+  },
+  {
+    "question": "What is slippage in trading?",
+    "ground_truth": "Slippage is the difference between the expected or requested execution price and the actual execution price, caused by volatility, liquidity, or latency."
+  },
+  {
+    "question": "What is maximum drawdown in trading?",
+    "ground_truth": "Maximum drawdown is the largest peak-to-trough decline in account or strategy equity over a selected period."
+  }
+]

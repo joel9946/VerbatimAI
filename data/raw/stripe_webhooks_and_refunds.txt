@@ -1,0 +1,70 @@
+# Stripe: Webhooks Verification, Event Handling, and Refunds
+
+## 1. Webhook Architecture & Signature Verification
+Because payment processing happens asynchronously (especially with 3D Secure, ACH transfers, and digital wallets), your server should rely on Stripe Webhooks to fulfill orders and update database statuses rather than trusting synchronous frontend redirects.
+
+Stripe signs every webhook event it sends using an HMAC-SHA256 signature included in the `Stripe-Signature` request header.
+To prevent man-in-the-middle attacks and replay attacks, you MUST verify the signature using your endpoint's webhook secret (`whsec_...`):
+
+```python
+import stripe
+from fastapi import FastAPI, Request, HTTPException
+
+app = FastAPI()
+endpoint_secret = "whsec_your_webhook_signing_secret"
+
+@app.post("/webhook")
+async def stripe_webhook(request: Request):
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload=payload,
+            sig_header=sig_header,
+            secret=endpoint_secret,
+        )
+    except ValueError:
+        # Invalid payload
+        raise HTTPException(status_code=400, detail="Invalid payload")
+    except stripe.error.SignatureVerificationError:
+        # Invalid signature
+        raise HTTPException(status_code=400, detail="Invalid signature")
+
+    # Handle event type
+    if event["type"] == "payment_intent.succeeded":
+        payment_intent = event["data"]["object"]
+        order_id = payment_intent.get("metadata", {}).get("order_id")
+        # Mark order as paid in database
+    elif event["type"] == "payment_intent.payment_failed":
+        payment_intent = event["data"]["object"]
+        error_message = payment_intent.get("last_payment_error", {}).get("message")
+        # Notify customer of failure
+
+    return {"status": "success"}
+```
+
+Always respond with a 2xx HTTP status code quickly (within a few seconds) to acknowledge receipt. If Stripe does not receive a 2xx status, it considers the delivery failed and retries over several days with exponential backoff.
+
+## 2. Processing Refunds
+You can issue refunds for charges or PaymentIntents that succeeded using the Refunds API.
+Refunds can be full or partial.
+
+To refund a payment:
+```python
+import stripe
+
+# Full refund
+refund = stripe.Refund.create(
+    payment_intent="pi_123456789",
+)
+
+# Partial refund
+partial_refund = stripe.Refund.create(
+    payment_intent="pi_123456789",
+    amount=500,  # Refund $5.00 of original amount
+    reason="requested_by_customer",  # options: duplicate, fraudulent, requested_by_customer
+)
+```
+
+Refunds typically take 5-10 business days to appear on the customer's bank statement. Stripe fees on the original payment are generally not returned when a refund is processed.

@@ -1,0 +1,91 @@
+# FastAPI: Path Parameters, Query Parameters, and Request Bodies
+
+## 1. Path Parameters
+You can declare path "parameters" or "variables" with the same syntax used by Python format strings:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int):
+    return {"item_id": item_id}
+```
+
+The value of the path parameter `item_id` will be passed to your function as the argument `item_id`.
+FastAPI provides automatic data parsing and type validation using Python standard type hints. If a user passes a string like `/items/foo`, FastAPI automatically returns a HTTP 422 Unprocessable Entity error with detailed validation error details.
+
+Order matters when declaring path operations:
+Because path operations are evaluated in order of declaration, if you have a fixed path like `/users/me` and a dynamic path like `/users/{user_id}`, you must declare `/users/me` before `/users/{user_id}`. Otherwise, the path for `/users/{user_id}` would match requests for `/users/me` thinking that `user_id` has a value of `"me"`.
+
+## 2. Query Parameters
+When you declare other function parameters that are not part of the path parameters, they are automatically interpreted as "query" parameters:
+
+```python
+@app.get("/items/")
+async def read_items(skip: int = 0, limit: int = 10):
+    return fake_items_db[skip : skip + limit]
+```
+
+The query is the set of key-value pairs that go after the `?` in a URL, separated by `&` characters. For example, in the URL:
+`http://127.0.0.1:8000/items/?skip=20&limit=50`
+the query parameters are `skip` with a value of `20` and `limit` with a value of `50`.
+
+If you provide a default value (like `skip: int = 0`), the parameter is optional. If you do not provide a default value (like `needy: str`), the query parameter is required.
+You can declare optional query parameters explicitly using `Union[str, None] = None` or `str | None = None`.
+
+## 3. Request Body and Pydantic Models
+When you need to send data from a client to your API, you send it as a request body.
+A request body is data sent by the client to your API. A response body is the data your API sends to the client.
+To declare a request body, you use Pydantic models with all their power and benefits:
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+
+class Item(BaseModel):
+    name: str
+    description: str | None = Field(default=None, title="The description of the item", max_length=300)
+    price: float = Field(gt=0, description="The price must be greater than zero")
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.post("/items/", status_code=201)
+async def create_item(item: Item):
+    item_dict = item.model_dump()
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+    return item_dict
+```
+
+FastAPI reads the body of the request as JSON, converts the types (if needed), validates the data, generates OpenAPI schemas, and provides full IDE auto-completion.
+
+## 4. Dependency Injection (Depends)
+FastAPI has a powerful Dependency Injection system. Dependency injection means that your code declares what it requires (its "dependencies") to function, and the framework takes care of providing them.
+Dependencies are created with standard functions or classes and injected using `Depends()`:
+
+```python
+from fastapi import Depends, FastAPI
+
+app = FastAPI()
+
+async def common_parameters(q: str | None = None, skip: int = 0, limit: int = 100):
+    return {"q": q, "skip": skip, "limit": limit}
+
+@app.get("/items/")
+async def read_items(commons: dict = Depends(common_parameters)):
+    return commons
+```
+
+Dependencies can yield resources, such as database sessions, allowing you to run clean-up code after the response is returned:
+```python
+async def get_db():
+    db = DBSession()
+    try:
+        yield db
+    finally:
+        db.close()
+```

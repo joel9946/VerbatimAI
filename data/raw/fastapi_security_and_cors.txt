@@ -1,0 +1,66 @@
+# FastAPI: Security, CORS, and Middleware
+
+## 1. Cross-Origin Resource Sharing (CORS)
+CORS or "Cross-Origin Resource Sharing" refers to situations when a frontend running in a browser has JavaScript code that communicates with a backend, and the backend is in a different "origin" than the frontend.
+An origin is the combination of protocol (`http`, `https`), domain (`myapp.com`, `localhost`), and port (`80`, `443`, `8080`).
+
+By default, web browsers forbid frontend scripts from sending cross-origin requests to prevent malicious scripts from reading sensitive user data from other domains.
+To allow cross-origin requests from specific frontends (e.g. `http://localhost:3000` or `https://myapp.com`), you add the `CORSMiddleware` to your FastAPI application:
+
+```python
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8501",
+    "https://example.com",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+Important options:
+- `allow_origins`: A list of origins that are permitted to make cross-origin requests. You can use `["*"]` to allow all origins (though not recommended with `allow_credentials=True` in production).
+- `allow_credentials`: Indicates whether cookies and authorization headers should be supported for cross-origin requests.
+- `allow_methods`: A list of HTTP methods allowed (e.g., `["GET", "POST"]` or `["*"]`).
+- `allow_headers`: A list of HTTP request headers allowed (e.g., `["Authorization", "Content-Type"]` or `["*"]`).
+
+## 2. OAuth2 with Password Flow and Bearer Tokens
+FastAPI provides a complete suite of security utilities under `fastapi.security`.
+The OAuth2 specification defines several "flows" to handle authentication. One of the most popular is the "password" flow, where the user submits a `username` and `password`, and the server returns a signed JWT access token.
+
+```python
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    # Authenticate user credentials here
+    if form_data.username != "johndoe" or form_data.password != "secret":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return {"access_token": "valid_token_xyz", "token_type": "bearer"}
+
+@app.get("/users/me")
+async def read_users_me(token: str = Depends(oauth2_scheme)):
+    # Verify and decode JWT token here
+    return {"token": token, "username": "johndoe"}
+```
+
+When an endpoint depends on `oauth2_scheme`, FastAPI inspects the incoming request's `Authorization` header, looking for the format `Bearer <token>`. If the header is absent or invalid, it automatically returns a 401 Unauthorized status with a `WWW-Authenticate: Bearer` challenge header.
